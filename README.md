@@ -7,7 +7,7 @@ It is common practice to write and read equations in infix notation, i.e. __5+5_
 
 ## Algorithms Used
 
-__Infix to Postfix Conversion Algorithm__ 
+#### Infix to Postfix Conversion Algorithm 
 1. Add operands (numbers and variables) to the result (postfix notation) as they arrive.
 2. If the stack is empty or contains a left parenthesis on top, push the incoming operator on the stack.
 3. If the incoming operator has higher precedence than the top of the stack, push it on the stack.
@@ -16,7 +16,7 @@ __Infix to Postfix Conversion Algorithm__
 6. If the incoming element is a right parenthesis, pop the stack and add operators to the result until you see a left parenthesis. Discard the pair of parentheses.
 7. At the end of the expression, pop the stack and add all operators to the result.
 
-__Calculate result from Postfix Notation__
+#### Calculate result from Postfix Notation
 1. If the incoming element is a number, push it into the stack (the whole number, not a single digit!).
 2. If the incoming element is the name of a variable, push its value into the stack.
 3. If the incoming element is an operator, then pop twice to get two numbers and perform the operation; push the result on the stack.
@@ -40,7 +40,8 @@ def is_valid_brackets(user_input):
     pass 
 ```
 
-If input has multiple consecutive + or -, it converts to correct operator. e.g. **- 5 - - + 10 ----> - 5 + 10**  
+If input has multiple consecutive + or -, it converts to correct operator. e.g.:  
+**- 5 - - + 10 ----> - 5 + 10**  
 ```python
 def to_single_operators(user_input):
     pass
