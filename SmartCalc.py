@@ -191,7 +191,7 @@ class SmartCalc:
                     stack.append(sp ** fp)
         return "%g" % stack.pop()
 
-    def user_helper(self, input):
+    def user_helper(self, input: str) -> None:
         if input == '/help':
             print("This is a smart calculator.")
             print("It supports the following operators: '+', '-', '*', '/', '^' ")
