@@ -191,6 +191,24 @@ class SmartCalc:
                     stack.append(sp ** fp)
         return "%g" % stack.pop()
 
+    def user_helper(self, input):
+        if input == '/help':
+            print("This is a smart calculator.")
+            print("It supports the following operators: '+', '-', '*', '/', '^' ")
+            print("You can also set variables for later use with the '=' operator")
+            print("Variable names must be strictly alphabetical utf-8")
+            print("It supports the proper order of operations by converting to postfix notation")
+            print("To clear all previously stored variables, type /clear")
+            print("To check all currently stored variables, type /currvars")
+        elif input == '/clear':
+            self.var_storer = {}
+            print('Variable storage has been reset')
+        elif input == '/currvars':
+            for key in self.var_storer:
+                print('%s: %g' % (key, self.var_storer[key]), end='  ')
+        else:
+            print('/help for overview and /exit to stop the program')
+
     def main(self):
         while True:
             inp = input().replace(' ', '')
@@ -201,24 +219,10 @@ class SmartCalc:
                 continue
             # forwardslash commands
             elif inp[0] == '/':
-                if inp == '/help':
-                    print("This is a smart calculator.")
-                    print("It supports the following operators: '+', '-', '*', '/', '^' ")
-                    print("You can also set variables for later use with the '=' operator")
-                    print("Variable names must be strictly alphabetical utf-8")
-                    print("It supports the proper order of operations by converting to postfix notation")
-                    print("To clear all previously stored variables, type /clear")
-                    print("To check all currently stored variables, type /currvars")
-                elif inp == '/clear':
-                    self.var_storer = {}
-                    print('Variable storage has been reset')
-                elif inp == '/currvars':
-                    for key in self.var_storer:
-                        print('%s: %g' % (key, self.var_storer[key]), end='  ')
-                elif inp == '/exit':
+                if inp == '/exit':
                     break
                 else:
-                    print('/help for overview and /exit to stop the program')
+                    self.user_helper(inp)
             # equals sign in input
             elif equals_index != -1:
                 proc_inp = self.to_single_operators(inp)
