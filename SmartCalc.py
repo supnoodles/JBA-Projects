@@ -147,10 +147,10 @@ class SmartCalc:
 
         return postfix
 
-    def calculate_result(self, postfix_str: str):
+    def calculate_result(self, postfix_str: str) -> str:
         """
         # -------- Calculate result from Postfix Notation ----------
-        # 1. If the incoming element is a number, push it into the stack (the whole number, not a single digit!).
+        # 1. If the incoming element is a number, push it into the stack (the whole number, not a single digit).
         # 2. If the incoming element is the name of a variable, push its value into the stack.
         # 3. If the incoming element is an operator, then pop twice to get two numbers and
         #      perform the operation; push the result on the stack.
@@ -160,27 +160,20 @@ class SmartCalc:
         num_storer = ''
 
         for i, x in enumerate(postfix_str):
-            # if char is operand
-            if x in self.digits or (i == 0 and postfix_str[i + 1] in self.digits):
-                try:
-                    if postfix_str[i + 1] in self.digits:
-                        num_storer += x
-                    else:
-                        num_storer += x
-                        stack.append(float(num_storer))
-                        num_storer = ''
-                except IndexError:
-                    return 'Invalid expression'
-            # if char a-z/A-Z
-            elif x.isalpha() or (i == 0 and postfix_str[i + 1].isalpha()):
+            if x in self.digits or (i == 0 and postfix_str[i] == '-'):
+                if postfix_str[i + 1] in self.digits:
+                    num_storer += x
+                else:
+                    num_storer += x
+                    stack.append(float(num_storer))
+                    num_storer = ''
+            # if char a-z/A-Z (variable)
+            elif x.isalpha() or (i == 0 and postfix_str[i] == '-'):
                 if postfix_str[i + 1].isalpha():
                     num_storer += x
                 else:
                     num_storer += x
-                    try:
-                        stack.append(float(self.var_storer[num_storer]))
-                    except KeyError:
-                        return 'Unknown variable'
+                    stack.append(float(self.var_storer[num_storer]))
                     num_storer = ''
             # if char is operator
             elif x in self.operators:
@@ -200,53 +193,55 @@ class SmartCalc:
 
     def main(self):
         while True:
-            try:
-                inp = input().replace(' ', '')
-                equals_index = inp.find('=')
+            inp = input().replace(' ', '')
+            equals_index = inp.find('=')
 
-                # no input
-                if not inp:
-                    continue
-                # forwardslash commands
-                elif inp[0] == '/':
-                    if inp == '/help':
-                        print("This is a smart calculator.")
-                        print("It supports the following operators: '+', '-', '*', '/', '^' ")
-                        print("You can also set variables for later use with the '=' operator")
-                        print("Variable names must be strictly alphabetical utf-8")
-                        print("It supports the proper order of operations by converting to postfix notation")
-                        print("To clear all previously stored variables, type /clear")
-                        print("To check all currently stored variables, type /currvars")
-                    elif inp == '/clear':
-                        self.var_storer = {}
-                        print('Variable storage has been reset')
-                    elif inp == '/currvars':
-                        for key in self.var_storer:
-                            print('%s: %g' % (key, self.var_storer[key]), end='  ')
-                    elif inp == '/exit':
-                        break
-                    else:
-                        print('/help for overview and /exit to stop the program')
-                # equals sign in input
-                elif equals_index != -1:
-                    proc_inp = self.to_single_operators(inp)
-                    self.assignment_check(proc_inp[0:equals_index], proc_inp[equals_index + 1: len(proc_inp)])
-                # no equals sign in input
+            # no input
+            if not inp:
+                continue
+            # forwardslash commands
+            elif inp[0] == '/':
+                if inp == '/help':
+                    print("This is a smart calculator.")
+                    print("It supports the following operators: '+', '-', '*', '/', '^' ")
+                    print("You can also set variables for later use with the '=' operator")
+                    print("Variable names must be strictly alphabetical utf-8")
+                    print("It supports the proper order of operations by converting to postfix notation")
+                    print("To clear all previously stored variables, type /clear")
+                    print("To check all currently stored variables, type /currvars")
+                elif inp == '/clear':
+                    self.var_storer = {}
+                    print('Variable storage has been reset')
+                elif inp == '/currvars':
+                    for key in self.var_storer:
+                        print('%s: %g' % (key, self.var_storer[key]), end='  ')
+                elif inp == '/exit':
+                    break
                 else:
-                    # input is a-z/A-Z
-                    if inp.isalpha():
-                        if inp in self.var_storer:
-                            print('%g' % self.var_storer[inp])
-                        else:
-                            print('Unknown variable')
-                    # input is not a-z/A-Z
-                    else:
-                        processed_inp = self.to_single_operators(inp)
-                        postfix = self.infix_to_postfix(processed_inp)
+                    print('/help for overview and /exit to stop the program')
+            # equals sign in input
+            elif equals_index != -1:
+                proc_inp = self.to_single_operators(inp)
+                self.assignment_check(proc_inp[0:equals_index], proc_inp[equals_index + 1: len(proc_inp)])
+            # no equals sign in input
+            else:
+                # input is a-z/A-Z (retrieve variable)
+                if inp.isalpha():
+                    try:
+                        print('%g' % self.var_storer[inp])
+                    except KeyError:
+                        print("No such variable exists")
+                # input is not a-z/A-Z (process a calculation)
+                else:
+                    processed_inp = self.to_single_operators(inp)
+                    postfix = self.infix_to_postfix(processed_inp)
+                    try:
                         result = self.calculate_result(postfix)
                         print(result)
-            except IndexError:
-                print("Invalid Input")
+                    except IndexError:
+                        print("Invalid Expression")
+                    except KeyError:
+                        print("No such variable exists")
 
 
 if __name__ == '__main__':
